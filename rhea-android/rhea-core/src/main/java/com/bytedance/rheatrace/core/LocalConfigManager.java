@@ -45,6 +45,8 @@ class LocalConfigManager {
 
     private static final String ATRACE_BUFFER_SIZE = "atraceBufferSize";
 
+    private static final String METHOD_ID_BUFFER_SIZE = "methodIdBufferSize";
+
     private static final String BLOCK_HOOK_LIBS = "blockHookLibs";
 
     /**
@@ -59,6 +61,7 @@ class LocalConfigManager {
                     .setMainThreadOnly(TraceRuntimeConfig.isMainThreadOnly())
                     .startWhenAppLaunch(TraceRuntimeConfig.isStartWhenAppLaunch())
                     .setATraceBufferSize(TraceRuntimeConfig.getATraceBufferSize())
+                    .setMethodIdBufferSize(TraceRuntimeConfig.getMethodIdBufferSize())
                     .enableIO(TraceRuntimeConfig.isEnableIO())
                     .enableMemory(TraceRuntimeConfig.isEnableMemory())
                     .enableClassLoad(TraceRuntimeConfig.isEnableClassLoad())
@@ -91,6 +94,7 @@ class LocalConfigManager {
         String classLoad = null;
         String startWhenAppLaunch = null;
         String atraceBufferSize = null;
+        String methodIdBufferSize = null;
         String blockHookLibs = null;
         while (numAttempts < 3 && !isReadPatchSuccessful) {
             numAttempts++;
@@ -105,6 +109,7 @@ class LocalConfigManager {
                 classLoad = properties.getProperty(CLASS_LOAD);
                 startWhenAppLaunch = properties.getProperty(START_WHEN_APP_LAUNCH);
                 atraceBufferSize = properties.getProperty(ATRACE_BUFFER_SIZE);
+                methodIdBufferSize = properties.getProperty(METHOD_ID_BUFFER_SIZE);
                 blockHookLibs = properties.getProperty(BLOCK_HOOK_LIBS);
             } catch (IOException e) {
                 Log.w(TAG, "read property failed, e:" + e);
@@ -131,8 +136,13 @@ class LocalConfigManager {
             try {
                 atraceBufferSizeValue = Long.parseLong(atraceBufferSize);
             } catch (NumberFormatException ignored) {
-
             }
+            long methodIdBufferSizeValue = 0;
+            try {
+                methodIdBufferSizeValue = Long.parseLong(methodIdBufferSize);
+            } catch (NumberFormatException ignored) {
+            }
+
             //remove all spaces.
             if (blockHookLibs != null) {
                 blockHookLibs = blockHookLibs.replace(" ", "");
@@ -147,6 +157,7 @@ class LocalConfigManager {
                     .enableClassLoad("true".equals(classLoad))
                     .startWhenAppLaunch(!"false".equals(startWhenAppLaunch))
                     .setATraceBufferSize(atraceBufferSizeValue)
+                    .setMethodIdBufferSize(methodIdBufferSizeValue)
                     .setBlockHookLibs(blockHookLibs)
                     .build();
         }

@@ -478,17 +478,14 @@ class TraceMethodAdapter(
                 }
                 return
             }
-
-            if (methodName.length <= 125) {
-                mv.visitLdcInsn("B:$methodName")
-                mv.visitMethodInsn(
-                    INVOKESTATIC,
-                    RheaConstants.CLASS_TraceStub,
-                    RheaConstants.METHOD_i,
-                    RheaConstants.DESC_TraceStub,
-                    false
-                )
-            }
+            mv.visitLdcInsn(id)
+            mv.visitMethodInsn(
+                INVOKESTATIC,
+                RheaConstants.CLASS_TraceStub,
+                RheaConstants.METHOD_i,
+                RheaConstants.DESC_TraceStub,
+                false
+            )
         }
     }
 
@@ -671,6 +668,26 @@ class TraceMethodAdapter(
                     false
                 )
             }
+
+            if (traceRuntime.methodIdBufferSize != null) {
+                var methodIdBufferSize: Long = 0
+                try {
+                    methodIdBufferSize = traceRuntime.methodIdBufferSize!!.toLong()
+                } catch (e: Exception) {
+                    RheaLog.w(
+                        TAG,
+                        "Failed to parse 'methodIdBufferSize', 'methodIdBufferSize' is not a illegal string of Long type."
+                    )
+                }
+                mv.visitLdcInsn(methodIdBufferSize)
+                mv.visitMethodInsn(
+                    INVOKESTATIC,
+                    RheaConstants.CLASS_RuntimeConfig,
+                    "setMethodIdBufferSize",
+                    "(J)V",
+                    false
+                )
+            }
         }
         collectedMethodMap[fullMethodName]?.apply {
             val methodName = getSimpleMethodName(this)
@@ -682,24 +699,14 @@ class TraceMethodAdapter(
                 return
             }
 
-
-            if (methodName.length <= 125) {
-                if (opcode == ATHROW) {
-                    //ATHROW special handling
-                    mv.visitLdcInsn("T:$methodName")
-                } else {
-                    mv.visitLdcInsn("E:$methodName")
-                }
-                mv.visitMethodInsn(
-                    INVOKESTATIC,
-                    RheaConstants.CLASS_TraceStub,
-                    RheaConstants.METHOD_o,
-                    RheaConstants.DESC_TraceStub,
-                    false
-                )
-            } else {
-                RheaLog.w(TAG, "method $methodName is too long, we can't trace it.")
-            }
+            mv.visitLdcInsn(id)
+            mv.visitMethodInsn(
+                INVOKESTATIC,
+                RheaConstants.CLASS_TraceStub,
+                if (opcode == ATHROW) RheaConstants.METHOD_t else RheaConstants.METHOD_o,
+                RheaConstants.DESC_TraceStub,
+                false
+            )
         }
     }
 

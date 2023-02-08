@@ -17,6 +17,7 @@
 package com.bytedance.rheatrace.core;
 
 import android.content.Context;
+import android.os.Build;
 import android.os.Environment;
 import android.os.Trace;
 import android.util.Log;
@@ -24,6 +25,7 @@ import android.widget.Toast;
 
 import androidx.annotation.MainThread;
 
+import com.bytedance.rheatrace.atrace.BinaryTrace;
 import com.bytedance.rheatrace.atrace.RheaATrace;
 import com.bytedance.rheatrace.common.ReflectUtil;
 
@@ -65,7 +67,8 @@ class TraceSwitch {
         if (started) {
             Log.d(TAG, "RheaTrace has been started, just ignore!");
         } else {
-            boolean result = RheaATrace.start(context, getRheaTraceDir(context.getPackageName()),
+            File rheaTraceDir = getRheaTraceDir(context.getPackageName());
+            boolean result = RheaATrace.start(context, rheaTraceDir,
                     new RheaATrace.Configuration(
                             traceConfiguration.enableIO,
                             traceConfiguration.mainThreadOnly,
@@ -74,10 +77,25 @@ class TraceSwitch {
                             traceConfiguration.atraceBufferSize,
                             traceConfiguration.blockHookLibs));
             if (result) {
+                BinaryTrace.init((int) traceConfiguration.methodIdBufferSize, new File(rheaTraceDir, "rhea-atrace.bin"));
+                doTimeCalibration();
                 started = true;
             } else {
                 Toast.makeText(context, "unfortunately, start trace failed!", Toast.LENGTH_LONG).show();
             }
+        }
+    }
+
+    public static void doTimeCalibration() {
+        try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
+                Trace.beginSection("rheatrace.time.calibration");
+                BinaryTrace.beginSection(0);
+                BinaryTrace.endSection(0);
+                Trace.endSection();
+            }
+        } catch (Throwable ignore) {
+            // keep from inline
         }
     }
 
@@ -88,6 +106,7 @@ class TraceSwitch {
             return;
         }
         if (started) {
+            BinaryTrace.stop();
             boolean result = RheaATrace.stop();
             if (result) {
                 started = false;

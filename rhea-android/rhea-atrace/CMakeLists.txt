@@ -31,6 +31,7 @@ add_library(rhea-trace
   ${SRC_DIR_ATRACE_MEMORY}
   ${SRC_DIR_ATRACE_TRACE}
   src/main/cpp/rhea_atrace_jni.cpp
+  src/main/cpp/binary_trace.cpp
 )
 
 find_library(log-lib log)

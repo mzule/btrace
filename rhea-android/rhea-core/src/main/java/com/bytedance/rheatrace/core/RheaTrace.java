@@ -20,6 +20,8 @@ import android.annotation.SuppressLint;
 import android.os.Looper;
 import android.os.Trace;
 
+import com.bytedance.rheatrace.atrace.BinaryTrace;
+
 final class RheaTrace {
 
     private final static Thread sMainThread = Looper.getMainLooper().getThread();
@@ -29,7 +31,7 @@ final class RheaTrace {
     static boolean mainThreadOnly = true;
 
     @SuppressLint("NewApi")
-    static void t(String methodId) {
+    static void i(String methodId) {
         if (!isMainProcess) {
             return;
         }
@@ -39,6 +41,47 @@ final class RheaTrace {
             }
         } else {
             Trace.beginSection(methodId);
+        }
+    }
+
+    @SuppressLint("NewApi")
+    static void o(String methodId) {
+        if (!isMainProcess) {
+            return;
+        }
+        if (mainThreadOnly) {
+            if (Thread.currentThread() == sMainThread) {
+                Trace.endSection();
+            }
+        } else {
+            Trace.endSection();
+        }
+    }
+
+    static void i(int methodId) {
+        if (!isMainProcess) {
+            return;
+        }
+        if (!mainThreadOnly || Thread.currentThread() == sMainThread) {
+            BinaryTrace.beginSection(methodId);
+        }
+    }
+
+    static void o(int methodId) {
+        if (!isMainProcess) {
+            return;
+        }
+        if (!mainThreadOnly || Thread.currentThread() == sMainThread) {
+            BinaryTrace.endSection(methodId);
+        }
+    }
+
+    static void t(int methodId) {
+        if (!isMainProcess) {
+            return;
+        }
+        if (!mainThreadOnly || Thread.currentThread() == sMainThread) {
+            BinaryTrace.interruptSection(methodId);
         }
     }
 }

@@ -40,7 +40,8 @@ object RheaConstants {
     const val CLASS_TraceStub = "com/bytedance/rheatrace/core/TraceStub"
     const val METHOD_i = "i"
     const val METHOD_o = "o"
-    const val DESC_TraceStub = "(Ljava/lang/String;)V"
+    const val METHOD_t = "t"
+    const val DESC_TraceStub = "(I)V"
     const val DESC_Custom_TraceStub = "(Ljava/lang/String;[Ljava/lang/Object;)V"
 
     const val ANEWARRAY_TYPE = "java/lang/Object"

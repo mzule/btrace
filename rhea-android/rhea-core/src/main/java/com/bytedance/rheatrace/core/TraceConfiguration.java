@@ -24,6 +24,8 @@ public final class TraceConfiguration {
 
     static final long DEFAULT_BUFFER_SIZE = 100000;
 
+    static final long DEFAULT_METHOD_ID_BUFFER_SIZE = 8_000_000;
+
     final boolean enableIO;
 
     final boolean mainThreadOnly;
@@ -36,6 +38,8 @@ public final class TraceConfiguration {
 
     final long atraceBufferSize;
 
+    final long methodIdBufferSize;
+
     final String blockHookLibs;
 
     public TraceConfiguration(Builder builder) {
@@ -45,6 +49,7 @@ public final class TraceConfiguration {
         this.enableClassLoad = builder.enableClassLoad;
         this.startWhenAppLaunch = builder.startWhenAppLaunch;
         this.atraceBufferSize = builder.atraceBufferSize;
+        this.methodIdBufferSize = builder.methodIdBufferSize;
         this.blockHookLibs = builder.blockHookLibs;
     }
 
@@ -55,6 +60,7 @@ public final class TraceConfiguration {
         if (atraceBufferSize > MAX_BUFFER_SIZE) {
             throw new IllegalArgumentException("atraceBufferSize must be less than 5000000");
         }
+        // TODO fill
     }
 
     @Override
@@ -66,6 +72,7 @@ public final class TraceConfiguration {
                 ", classLoad=" + enableClassLoad +
                 ", startWhenAppLaunch=" + startWhenAppLaunch +
                 ", atraceBufferSize=" + atraceBufferSize +
+                ", methodIdBufferSize=" + methodIdBufferSize +
                 ", blockHookLibs='" + blockHookLibs + '\'' +
                 '}';
     }
@@ -83,6 +90,7 @@ public final class TraceConfiguration {
         private boolean startWhenAppLaunch = true;
 
         private long atraceBufferSize = DEFAULT_BUFFER_SIZE;
+        private long methodIdBufferSize = DEFAULT_BUFFER_SIZE;
 
         private String blockHookLibs;
 
@@ -115,6 +123,14 @@ public final class TraceConfiguration {
             if (atraceBufferSize > 0) {
                 this.atraceBufferSize = atraceBufferSize;
             }
+            return this;
+        }
+
+        public Builder setMethodIdBufferSize(long methodIdBufferSize) {
+            if (methodIdBufferSize < MIN_BUFFER_SIZE) {
+                methodIdBufferSize = DEFAULT_METHOD_ID_BUFFER_SIZE;
+            }
+            this.methodIdBufferSize = methodIdBufferSize;
             return this;
         }
 

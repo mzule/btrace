@@ -132,6 +132,8 @@ int32_t ATrace::StopTrace() {
 }
 
 bool ATrace::IsATrace(int fd, size_t count) {
+  // TODO atrace LFRB disabled
+  return false;
   return (atrace_marker_fd_ != nullptr && fd == *atrace_marker_fd_ && count > 0);
 }
 

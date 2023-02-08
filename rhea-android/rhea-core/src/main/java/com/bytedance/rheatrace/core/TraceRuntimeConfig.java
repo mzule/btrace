@@ -36,6 +36,8 @@ public final class TraceRuntimeConfig {
 
     private static long sATraceBufferSize = 0;
 
+    private static long sMethodIdBufferSize = 0;
+
     private static boolean sEnableIO = true;
 
     private static boolean sEnableMemory = false;
@@ -71,6 +73,14 @@ public final class TraceRuntimeConfig {
         } else {
             TraceRuntimeConfig.sATraceBufferSize = aTraceBufferSize;
         }
+    }
+
+    public static void setsMethodIdBufferSize(long sMethodIdBufferSize) {
+        TraceRuntimeConfig.sMethodIdBufferSize = sMethodIdBufferSize;
+    }
+
+    public static long getMethodIdBufferSize() {
+        return sMethodIdBufferSize;
     }
 
     @SuppressWarnings("unused")

@@ -30,7 +30,7 @@ public class TraceStub {
      * @param methodId method id.
      */
     public static void i(String methodId) {
-        RheaTrace.t(methodId);
+        RheaTrace.i(methodId);
     }
 
     /**
@@ -39,7 +39,7 @@ public class TraceStub {
      * @param methodId method id.
      */
     public static void o(String methodId) {
-        RheaTrace.t(methodId);
+        RheaTrace.o(methodId);
     }
 
     /**
@@ -49,7 +49,7 @@ public class TraceStub {
      * @param object   array of params values
      */
     public static void i(String methodId, Object... object) {
-        RheaTrace.t(methodId + Arrays.toString(object));
+        RheaTrace.i(methodId + Arrays.toString(object));
     }
 
     /**
@@ -59,6 +59,15 @@ public class TraceStub {
      * @param object   array of params values
      */
     public static void o(String methodId, Object... object) {
-        RheaTrace.t(methodId + Arrays.toString(object));
+        RheaTrace.o(methodId + Arrays.toString(object));
     }
+
+    public static void i(int methodId) {
+        RheaTrace.i(methodId);
+    }
+
+    public static void o(int methodId) {
+        RheaTrace.o(methodId);
+    }
+
 }
